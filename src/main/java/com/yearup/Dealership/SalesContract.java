@@ -1,6 +1,7 @@
 package com.yearup.Dealership;
 
 public class SalesContract extends Contract {
+
     public SalesContract(String date, String customer_name, String customer_email, Vehicle vehicle) {
         super(date, customer_name, customer_email, vehicle);
     }

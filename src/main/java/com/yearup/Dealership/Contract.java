@@ -1,7 +1,7 @@
 package com.yearup.Dealership;
 
 public abstract class Contract {
-
+//
     private String date;
     private String customer_name;
     private String customer_email;
