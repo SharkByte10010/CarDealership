@@ -1,8 +1,10 @@
 package com.yearup.Dealership;
-
+import java.io.FileWriter;
+import java.io.BufferedWriter;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.List;
 
 
 public class DealershipFileManager {
@@ -48,8 +50,36 @@ public class DealershipFileManager {
         return dealership;
     }
 
-    public void saveDealership(Dealership dealerShip){
+    public void saveDealership(Dealership dealership) {
+        try {
+            FileWriter fileWriter = new FileWriter("01-DealershipVehicleList", true);
+            BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
 
+            // Save dealership information
+            bufferedWriter.write(dealership.getName() + "|" + dealership.getAddress() + "|" + dealership.getPhone());
+            bufferedWriter.newLine();
+
+            // Save vehicles
+            List<Vehicle> vehicles = dealership.getAllVehicles();
+            for (Vehicle vehicle : vehicles) {
+                bufferedWriter.write(
+                        vehicle.getVin() + "|" +
+                                vehicle.getYear() + "|" +
+                                vehicle.getMake() + "|" +
+                                vehicle.getModel() + "|" +
+                                vehicle.getVehicleType() + "|" +
+                                vehicle.getColor() + "|" +
+                                vehicle.getOdometer() + "|" +
+                                vehicle.getPrice()
+                );
+                bufferedWriter.newLine();
+            }
+
+            bufferedWriter.close();
+            System.out.println("Dealership saved successfully.");
+        } catch (IOException e) {
+            System.out.println("Error saving dealership: " + e.getMessage());
+        }
     }
 }
 

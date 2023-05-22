@@ -59,7 +59,7 @@ public class UserInterface {
         int input;
         do {
             System.out.print("""
-                    -----------Dealership Menu-----------
+                    ----------Used Car Dealership-----------
                     1. Get Vehicles by Price
                     2. Get Vehicles by Make and Model
                     3. Get Vehicles by Year
