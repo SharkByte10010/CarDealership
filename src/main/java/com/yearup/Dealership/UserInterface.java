@@ -1,5 +1,7 @@
 package com.yearup.Dealership;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -44,11 +46,15 @@ import java.util.Scanner;
  * doInputUntilDone()
  */
 public class UserInterface {
+
+    private DealershipFileManager fileManager;
+    private ContractFileManager contractFileManager;
     Dealership dealership;
 
     private void init() {
         DealershipFileManager dfm = new DealershipFileManager();
         dealership = dfm.getDealership();
+        contractFileManager = new ContractFileManager("contract.csv");
     }
 
     public void display() {
@@ -69,6 +75,7 @@ public class UserInterface {
                     7. Get All Vehicles
                     8. Add a Vehicle
                     9. Remove a Vehicle
+                    10.Sell/Lease a Vehicle
                     0. Exit
                     Please enter your choice: 
                     """);
@@ -85,6 +92,7 @@ public class UserInterface {
                 case 7 -> processGetAllVehicleRequest();
                 case 8 -> processAddVehicleRequest();
                 case 9 -> processRemoveVehicleRequest();
+                case 10 ->processCreateContractRequest();
                 case 0 -> {
                     System.out.println("See You On The Road ;) ");
                     System.exit(0);
@@ -211,8 +219,140 @@ public class UserInterface {
                 return;
             }
         }
-
         System.out.println("No vehicle found with the specified VIN.");
     }
+
+    public void processCreateContractRequest() {
+        // Prompt the user to enter the VIN of the vehicle
+        Scanner scanner = new Scanner(System.in);
+        System.out.print("Enter VIN of the vehicle: ");
+        String vin = scanner.nextLine();
+
+        Vehicle vehicle = null;
+
+        // Find the vehicle with the entered VIN in the dealership's inventory
+        for (Vehicle v : dealership.getAllVehicles()) {
+            if (v.getVin().equals(vin)) {
+                vehicle = v;
+                break;
+            }
+        }
+
+        if (vehicle != null) {
+            // Prompt the user to select the contract type
+            System.out.println("Select the contract type:");
+            System.out.println("[1] Sales Contract");
+            System.out.println("[2] Lease Contract");
+            System.out.print("Enter your choice: ");
+            int contractTypeChoice = scanner.nextInt();
+
+            if (contractTypeChoice == 1) {
+                // Create a sales contract for the selected vehicle
+                createSalesContract(vehicle);
+            } else if (contractTypeChoice == 2) {
+                // Create a lease contract for the selected vehicle
+                createLeaseContract(vehicle);
+            } else {
+                System.out.println("Invalid contract type choice.");
+            }
+        } else {
+            System.out.println("Vehicle not found.");
+        }
+    }
+
+    public void createSalesContract(Vehicle vehicle) {
+        // Display a message indicating the creation of a sales contract
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("Creating Sales Contract...");
+
+        // Get the current date for the contract
+        LocalDate currentDate = LocalDate.now();
+        DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy/MM/dd");
+        String contractDate = currentDate.format(dateFormatter);
+
+        // Prompt the user to enter customer details
+        System.out.print("Enter customer name: ");
+        String customerName = scanner.next().trim();
+        System.out.print("Enter customer email: ");
+        String customerEmail = scanner.next().trim();
+
+        // Calculate sales tax amount as 5% of the vehicle price
+        double salesTaxAmount = vehicle.getPrice() * 0.05;
+
+        // Set the recording fee to $100
+        double recordingFee = 100.00;
+
+        // Set the processing fee based on the vehicle price
+        double processingFee = (vehicle.getPrice() < 10000) ? 295.00 : 495.00;
+
+        // Prompt the user to enter the finance option (yes/no)
+        System.out.print("Enter finance option (yes/no): ");
+        boolean financeOption = scanner.next().equalsIgnoreCase("yes");
+
+        // Format prices and costs to display only two decimal places
+        String formattedSalesTaxAmount = String.format("%.2f", salesTaxAmount);
+        String formattedRecordingFee = String.format("%.2f", recordingFee);
+        String formattedProcessingFee = String.format("%.2f", processingFee);
+
+        // Create a sales contract object with the entered details
+        SalesContract salesContract = new SalesContract(contractDate, customerName, customerEmail, vehicle,
+                Double.parseDouble(formattedSalesTaxAmount), Double.parseDouble(formattedRecordingFee),
+                Double.parseDouble(formattedProcessingFee), financeOption);
+
+        // Save the sales contract
+        contractFileManager.saveContract(salesContract);
+
+        // Remove the vehicle from the dealership's inventory
+        dealership.removeVehicle(vehicle);
+
+        // Save the updated dealership information to a file
+        fileManager.saveDealership(dealership);
+
+        System.out.println("Sales Contract created and saved.");
+    }
+
+    public void createLeaseContract(Vehicle vehicle) {
+        // Display a message indicating the creation of a lease contract
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("Creating Lease Contract...");
+
+        // Get the current date for the contract
+        // Get the current date for the contract
+        LocalDate currentDate = LocalDate.now();
+        DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy/MM/dd");
+        String contractDate = currentDate.format(dateFormatter);
+
+        // Prompt the user to enter customer details
+        System.out.print("Enter customer name: ");
+        String customerName = scanner.next().trim();
+        System.out.print("Enter customer email: ");
+        String customerEmail = scanner.next().trim();
+
+        // Calculate expected ending value as 50% of the vehicle price
+        double expectedEndingValue = vehicle.getPrice() * 0.5;
+
+        // Calculate lease fee as 7% of the vehicle price
+        double leaseFee = vehicle.getPrice() * 0.07;
+
+        // Format prices and costs to display only two decimal places
+        String formattedExpectedEndingValue = String.format("%.2f", expectedEndingValue);
+        String formattedLeaseFee = String.format("%.2f", leaseFee);
+
+        // Create a lease contract object with the entered details
+        LeaseContract leaseContract = new LeaseContract(contractDate, customerName, customerEmail, vehicle,
+                Double.parseDouble(formattedExpectedEndingValue), Double.parseDouble(formattedLeaseFee));
+
+        // Save the lease contract
+        contractFileManager.saveContract(leaseContract);
+
+        // Remove the vehicle from the dealership's inventory
+        dealership.removeVehicle(vehicle);
+
+        // Save the updated dealership information to a file
+        fileManager.saveDealership(dealership);
+
+        System.out.println("Lease Contract created and saved.");
+    }
 }
+
 

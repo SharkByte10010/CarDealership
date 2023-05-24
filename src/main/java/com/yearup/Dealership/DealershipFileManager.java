@@ -13,7 +13,7 @@ public class DealershipFileManager {
         Dealership dealership = null;
         try {
             //Dealership file gets open
-            FileReader fileReader = new FileReader("01-DealershipVehicleList");
+            FileReader fileReader = new FileReader("01-DealershipVehicleList.csv");
             BufferedReader bufferedReader = new BufferedReader(fileReader);
             //Get dealership information
             String input;
@@ -52,7 +52,7 @@ public class DealershipFileManager {
 
     public void saveDealership(Dealership dealership) {
         try {
-            FileWriter fileWriter = new FileWriter("01-DealershipVehicleList", true);
+            FileWriter fileWriter = new FileWriter("01-DealershipVehicleList.csv", true);
             BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
 
             // Save dealership information

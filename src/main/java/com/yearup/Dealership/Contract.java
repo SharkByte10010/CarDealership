@@ -1,17 +1,47 @@
 package com.yearup.Dealership;
-
 public abstract class Contract {
-//
-    private String date;
-    private String customer_name;
-    private String customer_email;
-    private Vehicle vehicle;
+    private String contractDate;
+    private String customerName;
+    private String customerEmail;
+    private Vehicle vehicleSold;
 
-    public Contract(String date, String customer_name, String customer_email, Vehicle vehicle) {
-        this.date = date;
-        this.customer_name = customer_name;
-        this.customer_email = customer_email;
-        this.vehicle = vehicle;
+    public Contract(String contractDate, String customerName, String customerEmail, Vehicle vehicleSold) {
+        this.contractDate = contractDate;
+        this.customerName = customerName;
+        this.customerEmail = customerEmail;
+        this.vehicleSold = vehicleSold;
+    }
+
+    public String getContractDate() {
+        return contractDate;
+    }
+
+    public void setContractDate(String contractDate) {
+        this.contractDate = contractDate;
+    }
+
+    public String getCustomerName() {
+        return customerName;
+    }
+
+    public void setCustomerName(String customerName) {
+        this.customerName = customerName;
+    }
+
+    public String getCustomerEmail() {
+        return customerEmail;
+    }
+
+    public void setCustomerEmail(String customerEmail) {
+        this.customerEmail = customerEmail;
+    }
+
+    public Vehicle getVehicleSold() {
+        return vehicleSold;
+    }
+
+    public void setVehicleSold(Vehicle vehicleSold) {
+        this.vehicleSold = vehicleSold;
     }
 
     public abstract double getTotalPrice();
@@ -19,20 +49,4 @@ public abstract class Contract {
     public abstract double getMonthlyPayment();
 
     public abstract String getPersistenceString();
-
-    public String getDate() {
-        return date;
-    }
-
-    public String getCustomer_name() {
-        return customer_name;
-    }
-
-    public String getCustomer_email() {
-        return customer_email;
-    }
-
-    public Vehicle getVehicle() {
-        return vehicle;
-    }
 }
